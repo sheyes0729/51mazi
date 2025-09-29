@@ -66,5 +66,22 @@ function refreshChapters() {
   background-color: var(--bg-primary);
   position: relative;
   overflow: hidden;
+  background-color: #f8f1e3;
+  /* 仿旧纸张的米黄色 */
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  /* 添加细微的纸张纹理 */
+  background-size: 20px 20px;
+  /* 模拟书本页边距 */
+  box-shadow:
+    inset 0 0 30px rgba(0, 0, 0, 0.05),
+    0 0 15px rgba(0, 0, 0, 0.1);
+  /* 外阴影增加立体感 */
+  border: 1px solid #e0d5c0;
+  /* 纸张边框色 */
+  min-height: calc(100vh - 80px);
+  /* 确保高度 */
+  box-sizing: border-box;
 }
 </style>

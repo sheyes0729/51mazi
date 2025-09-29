@@ -2,7 +2,12 @@
   <div class="editor-panel">
     <!-- 章节标题 -->
     <div class="chapter-title">
-      <el-input v-model="chapterTitle" placeholder="章节标题" maxlength="20" class="chapter-title-input" />
+      <el-input
+        v-model="chapterTitle"
+        placeholder="章节标题"
+        maxlength="20"
+        class="chapter-title-input"
+      />
     </div>
     <!-- 菜单栏 -->
     <div class="editor-toolbar">
@@ -13,6 +18,7 @@
         <el-option label="楷体" value="KaiTi" />
         <el-option label="黑体" value="SimHei" />
       </el-select>
+
       <el-select v-model="fontSize" class="toolbar-item" size="small" style="width: 80px">
         <el-option label="12px" value="12px" />
         <el-option label="13px" value="13px" />
@@ -24,6 +30,7 @@
         <el-option label="22px" value="22px" />
         <el-option label="24px" value="24px" />
       </el-select>
+
       <el-select v-model="lineHeight" class="toolbar-item" size="small" style="width: 60px">
         <el-option label="1.2" value="1.2" />
         <el-option label="1.3" value="1.3" />
@@ -34,22 +41,44 @@
         <el-option label="2" value="2" />
         <el-option label="2.5" value="2.5" />
       </el-select>
-      <el-button class="toolbar-item" size="small" :type="isBold ? 'primary' : 'default'" @click="toggleBold">
-        <b>B</b>
-      </el-button>
-      <el-button class="toolbar-item" size="small" :type="isItalic ? 'primary' : 'default'" @click="toggleItalic">
-        <i>I</i>
-      </el-button>
-      <el-button size="small" class="toolbar-item" @click="copyContent">
-        <el-icon>
-          <DocumentCopy />
-        </el-icon>
-      </el-button>
-      <el-button size="small" class="toolbar-item" @click="toggleSearchPanel">
-        <el-icon>
-          <Search />
-        </el-icon>
-      </el-button>
+
+      <el-tooltip content="加粗">
+        <el-button
+          class="toolbar-item"
+          size="small"
+          :type="isBold ? 'primary' : 'default'"
+          @click="toggleBold"
+        >
+          <b>B</b>
+        </el-button>
+      </el-tooltip>
+
+      <el-tooltip content="斜体">
+        <el-button
+          class="toolbar-item"
+          size="small"
+          :type="isItalic ? 'primary' : 'default'"
+          @click="toggleItalic"
+        >
+          <i>I</i>
+        </el-button>
+      </el-tooltip>
+
+      <el-tooltip content="复制">
+        <el-button size="small" class="toolbar-item" @click="copyContent">
+          <el-icon>
+            <DocumentCopy />
+          </el-icon>
+        </el-button>
+      </el-tooltip>
+
+      <el-tooltip content="全文搜索">
+        <el-button size="small" class="toolbar-item" @click="toggleSearchPanel">
+          <el-icon>
+            <Search />
+          </el-icon>
+        </el-button>
+      </el-tooltip>
       <!-- <el-button size="small" class="toolbar-item" @click="undo"> 撤销 </el-button> -->
       <el-button size="small" class="toolbar-item" type="primary" @click="saveContent">
         保存
@@ -118,9 +147,6 @@ const align = computed({
   get: () => editorStore.align,
   set: (val) => editorStore.setAlign(val)
 })
-
-console.log('fontFamily', fontFamily.value);
-
 
 // const fontFamily = ref('inherit')
 // const fontSize = ref('16px')
@@ -409,7 +435,7 @@ watch(
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: var(--bg-primary);
+  // background-color: var(--bg-primary);
   color: var(--text-base);
   min-height: 0;
   overflow: hidden;
@@ -421,7 +447,7 @@ watch(
   gap: 10px;
   padding: 8px 15px;
   border-bottom: 1px solid var(--border-color);
-  background: var(--bg-soft);
+  // background: var(--bg-soft);
 }
 
 .toolbar-item {
@@ -431,7 +457,7 @@ watch(
 .chapter-title {
   padding: 8px 15px;
   border-bottom: 1px solid var(--border-color);
-  background: var(--bg-soft);
+  // background: var(--bg-soft);
 }
 
 .chapter-title-input {
@@ -440,6 +466,7 @@ watch(
 
   :deep(.el-input__wrapper) {
     box-shadow: none;
+    background-color: transparent;
   }
 
   &:focus-within {
@@ -454,11 +481,33 @@ watch(
   min-height: 0;
   padding: 16px;
   overflow-y: auto;
-  background: var(--bg-primary);
+  // background: var(--bg-primary);
   white-space: pre-wrap; // 保证Tab缩进和换行显示
   font-family: inherit, monospace;
 
-  >div {
+  &::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+    background-clip: content-box;
+  }
+
+  > div {
     height: 100%;
   }
 }
@@ -470,7 +519,7 @@ watch(
   line-height: 28px;
   padding: 8px 15px;
   border-top: 1px solid var(--border-color);
-  background-color: var(--bg-mute);
+  // background-color: var(--bg-mute);
   font-size: 14px;
   display: flex;
   align-items: center;
@@ -489,7 +538,7 @@ watch(
   }
 }
 
-::v-deep(.tiptap) {
+:deep(.tiptap) {
   height: 100%;
   white-space: pre-wrap; // 保证Tab缩进和换行显示
   font-family: inherit, monospace;

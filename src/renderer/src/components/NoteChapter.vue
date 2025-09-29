@@ -11,7 +11,9 @@
         </div>
         <div class="section-header-right">
           <el-tooltip content="创建笔记本" placement="bottom" :show-after="2000">
-            <el-icon @click.stop="createNotebook"><FolderAdd /></el-icon>
+            <el-icon @click.stop="createNotebook">
+              <FolderAdd />
+            </el-icon>
           </el-tooltip>
         </div>
       </div>
@@ -48,8 +50,12 @@
                 <el-icon v-if="node.data.type === 'folder'" @click.stop="createNote(node)">
                   <DocumentAdd />
                 </el-icon>
-                <el-icon @click.stop="editNoteNode(node)"><Edit /></el-icon>
-                <el-icon @click.stop="deleteNoteNode(node)"><Delete /></el-icon>
+                <el-icon @click.stop="editNoteNode(node)">
+                  <Edit />
+                </el-icon>
+                <el-icon @click.stop="deleteNoteNode(node)">
+                  <Delete />
+                </el-icon>
               </div>
             </div>
           </template>
@@ -68,13 +74,19 @@
         </div>
         <div class="section-header-right">
           <el-tooltip content="创建卷" placement="bottom" :show-after="2000">
-            <el-icon @click.stop="createVolume"><FolderAdd /></el-icon>
+            <el-icon @click.stop="createVolume">
+              <FolderAdd />
+            </el-icon>
           </el-tooltip>
           <el-tooltip content="卷排序" placement="bottom" :show-after="2000">
-            <el-icon @click.stop="sortVolumes"><Sort /></el-icon>
+            <el-icon @click.stop="sortVolumes">
+              <Sort />
+            </el-icon>
           </el-tooltip>
           <el-tooltip content="正文设置" placement="bottom" :show-after="2000">
-            <el-icon @click.stop="openChapterSettings"><Setting /></el-icon>
+            <el-icon @click.stop="openChapterSettings">
+              <Setting />
+            </el-icon>
           </el-tooltip>
         </div>
       </div>
@@ -115,8 +127,12 @@
                 >
                   <DocumentAdd />
                 </el-icon>
-                <el-icon @click.stop="editNode(node)"><Edit /></el-icon>
-                <el-icon @click.stop="deleteNode(node)"><Delete /></el-icon>
+                <el-icon @click.stop="editNode(node)">
+                  <Edit />
+                </el-icon>
+                <el-icon @click.stop="deleteNode(node)">
+                  <Delete />
+                </el-icon>
               </div>
             </div>
           </template>
@@ -706,7 +722,7 @@ async function handleSettingsChanged(newSettings) {
 <style lang="scss" scoped>
 .note-chapter {
   height: 100%;
-  background-color: var(--bg-soft);
+  // background-color: var(--bg-soft);
 }
 
 .panel-section {
@@ -723,6 +739,7 @@ async function handleSettingsChanged(newSettings) {
   align-items: center;
   justify-content: space-between;
   user-select: none;
+
   &-right {
     display: flex;
     align-items: center;
@@ -742,14 +759,16 @@ async function handleSettingsChanged(newSettings) {
   padding: 6px;
   box-sizing: content-box;
   padding: 6px;
+
   &.is-active {
     transform: rotate(90deg);
   }
 }
 
 .section-content {
-  ::v-deep(.el-tree) {
-    background-color: var(--bg-soft);
+  :deep(.el-tree) {
+    // background-color: var(--bg-soft);
+    background-color: transparent;
   }
 }
 
@@ -762,6 +781,7 @@ async function handleSettingsChanged(newSettings) {
   font-size: 13px;
   width: 100%;
   overflow: hidden;
+
   .node-name {
     flex: 1;
     width: 100%;
@@ -769,6 +789,7 @@ async function handleSettingsChanged(newSettings) {
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+
   .chapter-actions {
     opacity: 0;
     display: flex;
@@ -776,6 +797,7 @@ async function handleSettingsChanged(newSettings) {
     align-items: center;
     gap: 12px;
   }
+
   &:hover {
     .chapter-actions {
       opacity: 1;
