@@ -3,6 +3,7 @@
 > 💡 本文详细介绍如何在 Electron + Vue 3 项目中集成 TipTap 富文本编辑器，实现专业的写作体验，包括自定义扩展、实时统计、自动保存等核心功能。
 
 ## 📋 目录
+
 - [项目背景](#项目背景)
 - [TipTap 技术架构](#tiptap-技术架构)
 - [核心功能实现](#核心功能实现)
@@ -22,11 +23,12 @@
 
 ![编辑器界面](https://raw.githubusercontent.com/xiaoshengxianjun/51mazi/main/static/editor.png)
 
-*专业的写作编辑器界面 - 基于 TipTap 的富文本编辑器*
+_专业的写作编辑器界面 - 基于 TipTap 的富文本编辑器_
 
 ## 🏗️ TipTap 技术架构
 
 ### 技术栈选择
+
 ```javascript
 // package.json 依赖
 {
@@ -39,6 +41,7 @@
 ```
 
 ### 核心架构设计
+
 ```javascript
 // src/renderer/src/components/EditorPanel.vue
 import { Editor, EditorContent } from '@tiptap/vue-3'
@@ -278,7 +281,7 @@ import { Extension } from '@tiptap/core'
 
 export const TabInsert = Extension.create({
   name: 'tabInsert',
-  
+
   addKeyboardShortcuts() {
     return {
       Tab: () => {
@@ -299,7 +302,7 @@ import { Plugin, PluginKey } from 'prosemirror-state'
 
 export const Collapsible = Extension.create({
   name: 'collapsible',
-  
+
   addProseMirrorPlugins() {
     return [
       new Plugin({
@@ -330,7 +333,7 @@ import { Extension } from '@tiptap/core'
 
 export const CustomStyles = Extension.create({
   name: 'customStyles',
-  
+
   addGlobalAttributes() {
     return [
       {
@@ -338,8 +341,8 @@ export const CustomStyles = Extension.create({
         attributes: {
           customStyle: {
             default: null,
-            parseHTML: element => element.getAttribute('data-custom-style'),
-            renderHTML: attributes => {
+            parseHTML: (element) => element.getAttribute('data-custom-style'),
+            renderHTML: (attributes) => {
               if (!attributes.customStyle) return {}
               return {
                 'data-custom-style': attributes.customStyle,
@@ -365,7 +368,7 @@ let saveTimer = null
 function handleContentUpdate({ editor }) {
   const content = editor.getText()
   editorStore.setContent(content)
-  
+
   // 防抖保存
   if (saveTimer) clearTimeout(saveTimer)
   saveTimer = setTimeout(() => {
@@ -377,7 +380,7 @@ async function autoSaveContent() {
   try {
     const file = editorStore.file
     if (!file) return
-    
+
     const content = editorStore.content
     await window.electron.writeFile(file.path, content)
     console.log('自动保存成功')
@@ -393,7 +396,7 @@ async function autoSaveContent() {
 // 纯文本转 HTML 优化
 function plainTextToHtml(text) {
   if (!text) return ''
-  
+
   const lines = text.split('\n')
   const htmlLines = lines.map((line) => {
     // 替换 Tab 为空格
@@ -402,7 +405,7 @@ function plainTextToHtml(text) {
     html = html.replace(/ {2,}/g, (match) => '&nbsp;'.repeat(match.length))
     return html ? `<p>${html}</p>` : ''
   })
-  
+
   return htmlLines.join('')
 }
 ```
@@ -413,13 +416,13 @@ function plainTextToHtml(text) {
 // 组件销毁时清理资源
 onBeforeUnmount(async () => {
   if (saveTimer) clearTimeout(saveTimer)
-  
+
   // 保存最后的内容
   await autoSaveContent()
-  
+
   // 重置码字统计
   editorStore.resetTypingTimer()
-  
+
   // 销毁编辑器
   editor.value && editor.value.destroy()
 })
@@ -434,8 +437,7 @@ onBeforeUnmount(async () => {
   <div class="editor-stats">
     <span class="word-count">章节字数：{{ chapterWords }}</span>
     <span v-if="typingSpeed.perMinute > 0" class="typing-speed">
-      码字速度：{{ typingSpeed.perMinute }}字/分钟 
-      ({{ typingSpeed.perHour }}字/小时)
+      码字速度：{{ typingSpeed.perMinute }}字/分钟 ({{ typingSpeed.perHour }}字/小时)
     </span>
   </div>
 </template>
@@ -507,18 +509,18 @@ function getKeyCombination(event) {
     border-radius: 8px;
     min-height: 500px;
     padding: 20px;
-    
+
     &:focus {
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 2px var(--primary-color-alpha);
     }
-    
+
     p {
       margin: 0 0 1em 0;
       line-height: 1.6;
     }
-    
+
     p:last-child {
       margin-bottom: 0;
     }
@@ -529,6 +531,7 @@ function getKeyCombination(event) {
 ## 📊 功能特性总结
 
 ### ✅ 已实现功能
+
 - ✅ **基础编辑**: 文本输入、删除、选择
 - ✅ **格式控制**: 粗体、斜体、对齐方式
 - ✅ **字体设置**: 字体族、字号、行高
@@ -538,6 +541,7 @@ function getKeyCombination(event) {
 - ✅ **主题适配**: 多主题模式支持
 
 ### 🚀 技术亮点
+
 1. **高性能**: 基于 ProseMirror 的高性能架构
 2. **可扩展**: 支持自定义扩展和插件
 3. **用户友好**: 直观的工具栏和统计信息
@@ -548,12 +552,14 @@ function getKeyCombination(event) {
 TipTap 富文本编辑器在 51mazi 项目中的成功应用，展示了如何利用现代化的前端技术构建专业的写作工具。通过合理的架构设计、性能优化和用户体验优化，我们实现了一个功能完整、性能优秀的编辑器。
 
 ### 🎯 技术价值
+
 - **架构设计**: 模块化的扩展系统
 - **性能优化**: 防抖、懒加载等优化策略
 - **用户体验**: 实时统计、快捷键等交互优化
 - **可维护性**: 清晰的代码结构和状态管理
 
 ### 🔮 未来规划
+
 - **更多格式**: 支持更多文本格式和样式
 - **协作功能**: 多人协作编辑支持
 - **版本控制**: 更完善的版本管理功能
@@ -562,13 +568,15 @@ TipTap 富文本编辑器在 51mazi 项目中的成功应用，展示了如何�
 ---
 
 ### 📚 相关链接
+
 - **项目地址**: [GitHub - 51mazi](https://github.com/xiaoshengxianjun/51mazi)，给个 Star 哦~
 - **TipTap 官网**: [https://tiptap.dev](https://tiptap.dev)
 - **技术栈**: TipTap + Vue 3 + Electron + Element Plus
 
 ### 🏷️ 标签
+
 `#TipTap` `#富文本编辑` `#Vue3` `#Electron` `#小说写作` `#前端开发` `#性能优化`
 
 ---
 
-> 💡 **如果这篇文章对你有帮助，请给个 ⭐️ 支持一下！** 
+> 💡 **如果这篇文章对你有帮助，请给个 ⭐️ 支持一下！**

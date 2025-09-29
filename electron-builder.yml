@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.51mzi.app
 productName: 51mazi
 directories:
   buildResources: build
@@ -21,6 +21,8 @@ nsis:
   allowToChangeInstallationDirectory: true
   perMachine: false
   oneClick: false
+  runAfterFinish: true
+  deleteAppDataOnUninstall: true
 mac:
   entitlementsInherit: build/entitlements.mac.plist
   extendInfo:

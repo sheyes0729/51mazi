@@ -10,10 +10,10 @@
           <i class="el-icon-document"></i>
           我的书架
         </div>
-        <div class="menu-item" @click="showThemeDialog = true">
+        <!-- <div class="menu-item" @click="showThemeDialog = true">
           <i class="el-icon-setting"></i>
           主题设置
-        </div>
+        </div> -->
         <div class="menu-item" @click="showDirDialog = true">
           <i class="el-icon-setting"></i>
           系统设置
@@ -21,14 +21,6 @@
         <div class="menu-item" @click="goToUserGuide">
           <i class="el-icon-reading"></i>
           写作指南
-        </div>
-        <div class="menu-item">
-          <i class="el-icon-question"></i>
-          帮助中心
-        </div>
-        <div class="menu-item">
-          <i class="el-icon-money"></i>
-          打赏作者
         </div>
       </div>
     </div>

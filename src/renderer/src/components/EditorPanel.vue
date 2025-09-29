@@ -1,5 +1,9 @@
 <template>
   <div class="editor-panel">
+    <!-- 章节标题 -->
+    <div class="chapter-title">
+      <el-input v-model="chapterTitle" placeholder="章节标题" maxlength="20" class="chapter-title-input" />
+    </div>
     <!-- 菜单栏 -->
     <div class="editor-toolbar">
       <el-select v-model="fontFamily" class="toolbar-item" size="small" style="width: 100px">
@@ -28,42 +32,28 @@
         <el-option label="1.6" value="1.6" />
         <el-option label="1.8" value="1.8" />
         <el-option label="2" value="2" />
+        <el-option label="2.5" value="2.5" />
       </el-select>
-      <el-button
-        class="toolbar-item"
-        size="small"
-        :type="isBold ? 'primary' : 'default'"
-        @click="toggleBold"
-      >
+      <el-button class="toolbar-item" size="small" :type="isBold ? 'primary' : 'default'" @click="toggleBold">
         <b>B</b>
       </el-button>
-      <el-button
-        class="toolbar-item"
-        size="small"
-        :type="isItalic ? 'primary' : 'default'"
-        @click="toggleItalic"
-      >
+      <el-button class="toolbar-item" size="small" :type="isItalic ? 'primary' : 'default'" @click="toggleItalic">
         <i>I</i>
       </el-button>
       <el-button size="small" class="toolbar-item" @click="copyContent">
-        <el-icon><DocumentCopy /></el-icon>
+        <el-icon>
+          <DocumentCopy />
+        </el-icon>
       </el-button>
       <el-button size="small" class="toolbar-item" @click="toggleSearchPanel">
-        <el-icon><Search /></el-icon>
+        <el-icon>
+          <Search />
+        </el-icon>
       </el-button>
       <!-- <el-button size="small" class="toolbar-item" @click="undo"> 撤销 </el-button> -->
       <el-button size="small" class="toolbar-item" type="primary" @click="saveContent">
         保存
       </el-button>
-    </div>
-    <!-- 章节标题 -->
-    <div class="chapter-title">
-      <el-input
-        v-model="chapterTitle"
-        placeholder="章节标题"
-        maxlength="20"
-        class="chapter-title-input"
-      />
     </div>
     <!-- 正文内容编辑区 -->
     <div class="editor-content">
@@ -109,10 +99,33 @@ const chapterTitle = computed({
   set: (val) => editorStore.setChapterTitle(val)
 })
 
-const fontFamily = ref('inherit')
-const fontSize = ref('16px')
-const lineHeight = ref('1.6')
-const align = ref('left')
+const fontFamily = computed({
+  get: () => editorStore.fontFamily,
+  set: (val) => editorStore.setFontFamily(val)
+})
+
+const fontSize = computed({
+  get: () => editorStore.fontSize,
+  set: (val) => editorStore.setFontSize(val)
+})
+
+const lineHeight = computed({
+  get: () => editorStore.lineHeight,
+  set: (val) => editorStore.setLineHeight(val)
+})
+
+const align = computed({
+  get: () => editorStore.align,
+  set: (val) => editorStore.setAlign(val)
+})
+
+console.log('fontFamily', fontFamily.value);
+
+
+// const fontFamily = ref('inherit')
+// const fontSize = ref('16px')
+// const lineHeight = ref('2.5')
+// const align = ref('left')
 
 const editor = ref(null)
 let saveTimer = null
@@ -401,6 +414,7 @@ watch(
   min-height: 0;
   overflow: hidden;
 }
+
 .editor-toolbar {
   display: flex;
   align-items: center;
@@ -409,18 +423,32 @@ watch(
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-soft);
 }
+
 .toolbar-item {
   margin: 0;
 }
+
 .chapter-title {
   padding: 8px 15px;
   border-bottom: 1px solid var(--border-color);
   background: var(--bg-soft);
 }
+
 .chapter-title-input {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
+
+  :deep(.el-input__wrapper) {
+    box-shadow: none;
+  }
+
+  &:focus-within {
+    :deep(.el-input__wrapper) {
+      box-shadow: 0 0 0 2px rgba(64, 158, 255, 0.6);
+    }
+  }
 }
+
 .editor-content {
   flex: 1;
   min-height: 0;
@@ -429,10 +457,12 @@ watch(
   background: var(--bg-primary);
   white-space: pre-wrap; // 保证Tab缩进和换行显示
   font-family: inherit, monospace;
-  > div {
+
+  >div {
     height: 100%;
   }
 }
+
 .editor-stats {
   height: auto;
   min-height: 28px;
@@ -458,10 +488,12 @@ watch(
     color: var(--warning-color);
   }
 }
+
 ::v-deep(.tiptap) {
   height: 100%;
   white-space: pre-wrap; // 保证Tab缩进和换行显示
   font-family: inherit, monospace;
+
   &:focus {
     outline: none;
   }

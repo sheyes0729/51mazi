@@ -23,6 +23,7 @@ src/assets/styles/
 根据您的 iconfont 资源，以下图标可供使用：
 
 ### 功能图标
+
 - `relationship` - 关系图谱
 - `gantt` - 甘特图/事序图
 - `character` - 人物角色
@@ -33,6 +34,7 @@ src/assets/styles/
 - `theme` - 主题设置
 
 ### 操作图标
+
 - `replaceall` - 全部替换
 - `replace` - 替换
 - `naming` - 命名
@@ -50,13 +52,13 @@ src/assets/styles/
 <template>
   <!-- 基础使用 -->
   <IconFont name="relationship" />
-  
+
   <!-- 自定义大小和颜色 -->
   <IconFont name="character" :size="24" color="#409eff" />
-  
+
   <!-- 添加样式类 -->
   <IconFont name="map" class="icon-lg icon-primary" />
-  
+
   <!-- 带点击事件 -->
   <IconFont name="save" @click="handleSave" />
 </template>
@@ -68,13 +70,13 @@ src/assets/styles/
 <template>
   <!-- 基础使用 -->
   <SvgIcon name="gantt" />
-  
+
   <!-- 自定义大小和颜色 -->
   <SvgIcon name="timeline" :size="20" color="#67c23a" />
-  
+
   <!-- 添加样式类 -->
   <SvgIcon name="theme" class="svg-xl svg-warning" />
-  
+
   <!-- 带点击事件 -->
   <SvgIcon name="export" @click="handleExport" />
 </template>
@@ -86,10 +88,10 @@ src/assets/styles/
 <template>
   <!-- 直接使用 iconfont 类 -->
   <i class="iconfont icon-character"></i>
-  
+
   <!-- 添加样式变体 -->
   <i class="iconfont icon-map icon-lg icon-primary"></i>
-  
+
   <!-- 添加动画效果 -->
   <i class="iconfont icon-save icon-spin"></i>
 </template>
@@ -98,6 +100,7 @@ src/assets/styles/
 ## 🎨 样式变体
 
 ### 大小变体
+
 - `icon-xs` / `svg-xs` - 12px
 - `icon-sm` / `svg-sm` - 14px
 - `icon-md` / `svg-md` - 16px（默认）
@@ -106,6 +109,7 @@ src/assets/styles/
 - `icon-2xl` / `svg-2xl` - 32px
 
 ### 颜色变体
+
 - `icon-primary` / `svg-primary` - 主题蓝色
 - `icon-success` / `svg-success` - 成功绿色
 - `icon-warning` / `svg-warning` - 警告橙色
@@ -115,10 +119,12 @@ src/assets/styles/
 - `icon-black` / `svg-black` - 黑色
 
 ### 动画效果
+
 - `icon-spin` - 旋转动画
 - `icon-hover` - 悬停效果
 
 ### 按钮样式
+
 - `icon-button` - 基础按钮样式
 - `icon-button primary` - 主要按钮
 - `icon-button success` - 成功按钮
@@ -128,26 +134,31 @@ src/assets/styles/
 ## 💡 使用建议
 
 ### 1. 选择合适的方式
+
 - **IconFont 组件**：适合简单的图标显示，性能更好
 - **SvgIcon 组件**：适合需要精确控制样式的场景，支持更多样式选项
 
 ### 2. 保持一致性
+
 - 在同一个项目中尽量使用同一种方式
 - 统一图标的大小和颜色规范
 
 ### 3. 性能优化
+
 - 优先使用 IconFont 组件（字体方式）
 - 需要复杂样式时再使用 SvgIcon 组件
 
 ## 🔧 组件属性
 
 ### IconFont 组件属性
+
 - `name` (String, 必需) - 图标名称
 - `size` (String|Number, 默认: 16) - 图标大小
 - `color` (String, 默认: 'currentColor') - 图标颜色
 - `className` (String, 默认: '') - 额外的 CSS 类名
 
 ### SvgIcon 组件属性
+
 - `name` (String, 必需) - 图标名称
 - `size` (String|Number, 默认: 16) - 图标大小
 - `color` (String, 默认: 'currentColor') - 图标颜色
@@ -166,7 +177,7 @@ src/assets/styles/
       <IconFont name="character" :size="24" />
       <IconFont name="map" :size="24" />
     </div>
-    
+
     <!-- 操作图标展示 -->
     <div class="icon-group">
       <h3>操作图标</h3>
@@ -174,7 +185,7 @@ src/assets/styles/
       <SvgIcon name="export" :size="20" color="#409eff" />
       <SvgIcon name="import" :size="20" color="#e6a23c" />
     </div>
-    
+
     <!-- 按钮样式 -->
     <div class="icon-group">
       <h3>按钮样式</h3>

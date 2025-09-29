@@ -1,11 +1,30 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref, computed, onBeforeMount } from 'vue'
 
 // 编辑器相关全局状态管理
 export const useEditorStore = defineStore('editor', () => {
   const content = ref('')
   const file = ref(null)
   const chapterTitle = ref('')
+
+  // 编辑器样式配置
+  const fontFamily = ref('inherit')
+  const fontSize = ref('16px')
+  const lineHeight = ref('2.5')
+  const align = ref('left')
+
+  onBeforeMount(async () => {
+    const [fa, fs, lh, al] = await Promise.all([
+      await window.electronStore.get('editor:fontFamily'),
+      await window.electronStore.get('editor:fontSize'),
+      await window.electronStore.get('editor:lineHeight'),
+      await window.electronStore.get('editor:align')
+    ])
+    fontFamily.value = fa || 'inherit'
+    fontSize.value = fs || '16px'
+    lineHeight.value = lh || '2.5'
+    align.value = al || 'left'
+  })
 
   // 码字统计相关
   const typingStartTime = ref(null)
@@ -44,12 +63,12 @@ export const useEditorStore = defineStore('editor', () => {
   const netWordChange = computed(() => {
     // 如果还没有开始编辑会话，返回0
     if (!sessionStartTime.value) return 0
-    
+
     // 如果最低字数等于初始字数，说明没有减少过，净增就是当前字数减去初始字数
     if (sessionMinWordCount.value === getContentWordCount(sessionInitialContent.value)) {
       return contentWordCount.value - getContentWordCount(sessionInitialContent.value)
     }
-    
+
     // 否则以最低字数为基准计算净增
     return contentWordCount.value - sessionMinWordCount.value
   })
@@ -189,6 +208,26 @@ export const useEditorStore = defineStore('editor', () => {
     chapterTitle.value = title
   }
 
+  function setFontFamily(family) {
+    fontFamily.value = family
+    window.electronStore.set('editor:fontFamily', family)
+  }
+
+  function setFontSize(size) {
+    fontSize.value = size
+    window.electronStore.set('editor:fontSize', size)
+  }
+
+  function setLineHeight(height) {
+    lineHeight.value = height
+    window.electronStore.set('editor:lineHeight', height)
+  }
+
+  function setAlign(alignment) {
+    align.value = alignment
+    window.electronStore.set('editor:align', alignment)
+  }
+
   return {
     content,
     file,
@@ -204,6 +243,14 @@ export const useEditorStore = defineStore('editor', () => {
     startEditingSession,
     resetTypingTimer,
     resetEditingSession,
-    getSessionStats
+    getSessionStats,
+    fontFamily,
+    fontSize,
+    lineHeight,
+    align,
+    setFontFamily,
+    setFontSize,
+    setLineHeight,
+    setAlign
   }
 })

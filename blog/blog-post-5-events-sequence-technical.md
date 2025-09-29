@@ -3,6 +3,7 @@
 > 💡 本文深入探讨了在小说写作软件中实现类似甘特图的事序图功能的技术方案，包括时间轴可视化、事件管理、拖拽交互等核心功能的完整实现，为开发者提供一套完整的时间轴管理解决方案。
 
 ## 📋 目录
+
 - [项目背景](#项目背景)
 - [技术架构设计](#技术架构设计)
 - [核心功能实现](#核心功能实现)
@@ -20,9 +21,10 @@
 
 ![事序图](https://raw.githubusercontent.com/xiaoshengxianjun/51mazi/main/static/events-sequence.png)
 
-*可视化事序图管理 - 直观展示事件时间轴和进度*
+_可视化事序图管理 - 直观展示事件时间轴和进度_
 
 ### ✨ 核心功能特性
+
 - 🕐 **时间轴可视化**: 基于时间单元格的可视化事件展示
 - 📝 **事件管理**: 支持创建、编辑、删除事件，包含简介、详情、进度等信息
 - 🖱️ **拖拽调整**: 直观的拖拽操作调整事件时间位置
@@ -33,6 +35,7 @@
 ## 🏗️ 技术架构设计
 
 ### 核心技术栈
+
 - **Vue 3.5.13**: 渐进式 JavaScript 框架
 - **Element Plus 2.10.1**: 企业级 UI 组件库
 - **Electron 35.0.3**: 跨平台桌面应用框架
@@ -130,10 +133,10 @@ const sequenceCharts = ref([
 // 事件条样式计算
 const getEventBarStyle = (event) => {
   if (!event.startTime || !event.endTime) return {}
-  
+
   const left = (event.startTime - 1) * 40 // 40px 单元格宽度
   const width = (event.endTime - event.startTime + 1) * 40
-  
+
   return {
     left: `${left}px`,
     width: `${width}px`,
@@ -147,9 +150,7 @@ const getEventBarStyle = (event) => {
 ```javascript
 // 进度条宽度计算
 const getEventProgressWidth = (event) => {
-  const progress = typeof event.progress === 'number' 
-    ? event.progress 
-    : Number(event.progress) || 0
+  const progress = typeof event.progress === 'number' ? event.progress : Number(event.progress) || 0
   const clamped = Math.max(0, Math.min(100, progress))
   return `${clamped}%`
 }
@@ -175,8 +176,12 @@ const getEventProgressWidth = (event) => {
 }
 
 @keyframes progressStripes {
-  0% { background-position: 0 0; }
-  100% { background-position: 8px 8px; }
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 8px 8px;
+  }
 }
 ```
 
@@ -200,20 +205,20 @@ let clickSuppressTimer = null
 ```javascript
 const startDrag = (event, eventData) => {
   event.preventDefault()
-  
+
   draggingEvent.value = eventData
   dragStartX.value = event.clientX
   dragStartLeft.value = (eventData.startTime - 1) * 40
   hasMovedWhileMouseDown.value = false
   isPointerDown.value = true
-  
+
   // 添加全局鼠标事件监听
   document.addEventListener('mousemove', handleDrag)
   document.addEventListener('mouseup', stopDrag)
-  
+
   // 设置拖拽状态
   isDragging.value = true
-  
+
   // 添加拖拽样式
   document.body.style.cursor = 'grabbing'
   document.body.style.userSelect = 'none'
@@ -226,26 +231,26 @@ const startDrag = (event, eventData) => {
 ```javascript
 const handleDrag = (event) => {
   if (!isDragging.value || !draggingEvent.value) return
-  
+
   const deltaX = event.clientX - dragStartX.value
   if (Math.abs(deltaX) > 3) {
     hasMovedWhileMouseDown.value = true
   }
   const newLeft = dragStartLeft.value + deltaX
-  
+
   // 计算新的时间位置（基于40px单元格宽度）
   const newStartTime = Math.round(newLeft / 40) + 1
-  
+
   // 边界检查
   const chart = sequenceCharts.value.find((c) => c.events.includes(draggingEvent.value))
   if (chart) {
     const eventDuration = draggingEvent.value.endTime - draggingEvent.value.startTime + 1
     const maxStartTime = chart.cellCount - eventDuration + 1
-    
+
     // 限制在有效范围内
     const clampedStartTime = Math.max(1, Math.min(newStartTime, maxStartTime))
     const clampedEndTime = clampedStartTime + eventDuration - 1
-    
+
     // 更新事件时间
     draggingEvent.value.startTime = clampedStartTime
     draggingEvent.value.endTime = clampedEndTime
@@ -258,7 +263,7 @@ const handleDrag = (event) => {
 ```javascript
 const stopDrag = async () => {
   if (!isDragging.value || !draggingEvent.value) return
-  
+
   // 显示拖拽结果
   const chart = sequenceCharts.value.find((c) => c.events.includes(draggingEvent.value))
   if (chart) {
@@ -275,15 +280,15 @@ const stopDrag = async () => {
       }, 120)
     }
   }
-  
+
   // 清理拖拽状态
   isDragging.value = false
   draggingEvent.value = null
-  
+
   // 移除全局事件监听
   document.removeEventListener('mousemove', handleDrag)
   document.removeEventListener('mouseup', stopDrag)
-  
+
   // 恢复样式
   document.body.style.cursor = ''
   document.body.style.userSelect = ''
@@ -320,10 +325,10 @@ ipcMain.handle('read-sequence-charts', async (event, bookId) => {
   try {
     const bookDir = path.join(booksDirectory, bookId)
     const filePath = path.join(bookDir, 'sequence-charts.json')
-    
+
     // 确保目录存在
     await fs.mkdir(bookDir, { recursive: true })
-    
+
     const data = await fs.readFile(filePath, 'utf8')
     return JSON.parse(data)
   } catch (error) {
@@ -337,10 +342,10 @@ ipcMain.handle('write-sequence-charts', async (event, bookId, data) => {
   try {
     const bookDir = path.join(booksDirectory, bookId)
     const filePath = path.join(bookDir, 'sequence-charts.json')
-    
+
     // 确保目录存在
     await fs.mkdir(bookDir, { recursive: true })
-    
+
     await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf8')
     return { success: true }
   } catch (error) {
@@ -380,7 +385,10 @@ const loadSequenceCharts = async () => {
 // 保存事序图数据
 const saveSequenceCharts = async () => {
   try {
-    const result = await window.electron.writeSequenceCharts(currentBookId.value, sequenceCharts.value)
+    const result = await window.electron.writeSequenceCharts(
+      currentBookId.value,
+      sequenceCharts.value
+    )
     if (!result.success) {
       throw new Error(result.error)
     }
@@ -437,16 +445,19 @@ onUnmounted(() => {
 ## 🎯 技术亮点总结
 
 ### 1. 创新的交互设计
+
 - **拖拽与点击分离**: 通过 `mouseup` 事件和位移检测，完美解决拖拽与点击的冲突
 - **视觉反馈**: 拖拽时的视觉状态变化，提升用户体验
 - **边界限制**: 智能的边界检查，防止事件拖拽到无效位置
 
 ### 2. 高性能渲染
+
 - **分层渲染**: 背景网格、事件条分层渲染，提升性能
 - **CSS动画**: 使用CSS动画实现进度条效果，性能更优
 - **响应式设计**: 基于Vue 3的响应式系统，数据变化自动更新UI
 
 ### 3. 数据持久化
+
 - **本地存储**: 基于文件系统的本地存储，数据安全可靠
 - **自动保存**: 数据变化自动保存，防止数据丢失
 - **错误处理**: 完善的错误处理机制，提升系统稳定性
@@ -456,12 +467,14 @@ onUnmounted(() => {
 本文详细介绍了在小说写作软件中实现事序图功能的技术方案。通过Vue 3的响应式系统、Element Plus的UI组件、以及精心设计的交互逻辑，我们实现了一个功能完善、用户体验优秀的时间轴管理工具。
 
 ### 技术优势
+
 - ✅ **高性能**: 基于Vue 3的响应式系统，渲染性能优秀
 - ✅ **易扩展**: 模块化设计，易于功能扩展
 - ✅ **用户友好**: 直观的拖拽交互，操作简单
 - ✅ **数据安全**: 本地文件存储，数据安全可靠
 
 ### 未来优化方向
+
 - 🔮 **实时协作**: 支持多用户实时协作编辑
 - 🔮 **模板系统**: 提供预设的事件模板
 - 🔮 **导出功能**: 支持导出为图片或PDF格式
@@ -472,11 +485,13 @@ onUnmounted(() => {
 ---
 
 ### 📚 相关链接
+
 - **项目地址**: [GitHub - 51mazi](https://github.com/xiaoshengxianjun/51mazi)，给个 Star 哦~
 - **技术栈**: Electron + Vue 3 + Element Plus
 - **关键词**: 事序图、甘特图、时间轴管理、拖拽交互、Vue 3
 
 ### 🏷️ 标签
+
 `#Vue3` `#ElementPlus` `#事序图` `#甘特图` `#时间轴管理` `#拖拽交互` `#小说写作` `#前端开发`
 
 ---

@@ -3,6 +3,7 @@
 > 💡 本文深入探讨了基于 Electron + Vue 3 技术栈的桌面写作软件中书籍管理系统的设计与实现，涵盖了书籍的创建、编辑、删除等核心功能的完整技术方案，为开发者提供一套完整的书籍管理解决方案。
 
 ## 📋 目录
+
 - [项目背景](#项目背景)
 - [技术架构概览](#技术架构概览)
 - [书籍管理核心功能实现](#书籍管理核心功能实现)
@@ -20,9 +21,10 @@
 
 ![书籍管理](https://raw.githubusercontent.com/xiaoshengxianjun/51mazi/main/static/home.png)
 
-*直观的书籍管理界面 - 支持创建、编辑、删除等操作*
+_直观的书籍管理界面 - 支持创建、编辑、删除等操作_
 
 ### ✨ 功能特性
+
 - 📝 **书籍创建**: 支持多种类型书籍创建
 - ✏️ **书籍编辑**: 实时编辑书籍信息和元数据
 - 🗑️ **书籍删除**: 安全删除确认机制
@@ -33,6 +35,7 @@
 ## 🏗️ 技术架构概览
 
 ### 核心技术栈
+
 - **Electron 35.0.3**: 跨平台桌面应用框架
 - **Vue 3.5.13**: 渐进式 JavaScript 框架
 - **Element Plus 2.10.1**: 企业级 UI 组件库
@@ -48,6 +51,7 @@
 ```
 
 ### 📁 项目目录结构
+
 ```
 51mazi/
 ├── src/
@@ -77,15 +81,15 @@
 
 ```javascript
 const bookData = {
-  id: 'unique_id',           // 唯一标识
-  name: '书籍名称',           // 书名
-  type: 'novel',             // 类型
-  typeName: '小说',          // 类型名称
-  targetCount: 100000,       // 目标字数
-  intro: '书籍简介',         // 简介
-  createdAt: '2024-01-01',  // 创建时间
-  updatedAt: '2024-01-01',  // 更新时间
-  totalWords: 50000          // 当前字数
+  id: 'unique_id', // 唯一标识
+  name: '书籍名称', // 书名
+  type: 'novel', // 类型
+  typeName: '小说', // 类型名称
+  targetCount: 100000, // 目标字数
+  intro: '书籍简介', // 简介
+  createdAt: '2024-01-01', // 创建时间
+  updatedAt: '2024-01-01', // 更新时间
+  totalWords: 50000 // 当前字数
 }
 ```
 
@@ -106,12 +110,12 @@ ipcMain.handle('create-book', async (event, bookInfo) => {
   const safeName = bookInfo.name.replace(/[\\/:*?"<>|]/g, '_')
   const booksDir = store.get('booksDir')
   const bookPath = join(booksDir, safeName)
-  
+
   // 创建书籍目录结构
   if (!fs.existsSync(bookPath)) {
     fs.mkdirSync(bookPath)
   }
-  
+
   // 写入元数据文件
   const meta = {
     ...bookInfo,
@@ -119,13 +123,13 @@ ipcMain.handle('create-book', async (event, bookInfo) => {
     updatedAt: new Date().toLocaleString()
   }
   fs.writeFileSync(join(bookPath, 'mazi.json'), JSON.stringify(meta, null, 2))
-  
+
   // 创建默认目录结构
   const textPath = join(bookPath, '正文')
   const notesPath = join(bookPath, '笔记')
   fs.mkdirSync(textPath, { recursive: true })
   fs.mkdirSync(notesPath, { recursive: true })
-  
+
   return true
 })
 
@@ -259,22 +263,22 @@ import { ref } from 'vue'
 
 export const useMainStore = defineStore('main', () => {
   const books = ref([])
-  
+
   function setBooks(newBooks) {
     books.value = newBooks
   }
-  
+
   function addBook(book) {
     books.value.push(book)
   }
-  
+
   function removeBook(bookId) {
-    const index = books.value.findIndex(book => book.id === bookId)
+    const index = books.value.findIndex((book) => book.id === bookId)
     if (index > -1) {
       books.value.splice(index, 1)
     }
   }
-  
+
   return {
     books,
     setBooks,
@@ -302,7 +306,7 @@ async function handleConfirm() {
         ElMessage.error('已存在同名书籍，不能重复创建！')
         return
       }
-      
+
       const randomId = Date.now().toString() + Math.floor(Math.random() * 10000).toString()
       const bookData = {
         id: randomId,
@@ -312,7 +316,7 @@ async function handleConfirm() {
         targetCount: form.value.targetCount,
         intro: form.value.intro
       }
-      
+
       await createBook(bookData)
       dialogVisible.value = false
       await readBooksDir()
@@ -413,19 +417,23 @@ await ElMessageBox.confirm(`确定要删除《${book.name}》吗？此操作不�
 ## ⚡ 技术亮点总结
 
 ### 1. 🔄 跨进程通信设计
+
 - 使用 Electron 的 IPC 机制实现主进程与渲染进程的安全通信
 - 通过 contextBridge 暴露安全的 API 接口
 
 ### 2. 🗂️ 文件系统管理
+
 - 自动创建标准化的书籍目录结构
 - 元数据 JSON 文件存储，便于扩展和维护
 - 文件名安全处理，避免特殊字符冲突
 
 ### 3. 🗃️ 状态管理优化
+
 - 使用 Pinia 实现响应式状态管理
 - 统一的数据流，确保 UI 与数据同步
 
 ### 4. 🎨 用户体验设计
+
 - 直观的书籍卡片展示
 - 右键菜单快速操作
 - 完善的表单验证和错误提示
@@ -433,6 +441,7 @@ await ElMessageBox.confirm(`确定要删除《${book.name}》吗？此操作不�
 ## 🔮 扩展性考虑
 
 ### 1. 📚 书籍类型扩展
+
 ```javascript
 const BOOK_TYPES = [
   { value: 'novel', label: '小说' },
@@ -445,19 +454,20 @@ const BOOK_TYPES = [
 > 💡 **完整书籍类型配置请查看**: [src/renderer/src/constants/config.js](https://github.com/xiaoshengxianjun/51mazi/blob/main/src/renderer/src/constants/config.js)
 
 ### 2. 📊 元数据扩展
+
 ```javascript
 const bookMeta = {
   // 基础信息
   id: 'unique_id',
   name: '书籍名称',
   type: 'novel',
-  
+
   // 扩展信息
   tags: ['标签1', '标签2'],
   status: 'writing', // writing, completed, paused
   coverImage: 'cover.jpg',
   wordCountGoal: 100000,
-  
+
   // 统计信息
   currentWordCount: 50000,
   chaptersCount: 10,
@@ -472,12 +482,14 @@ const bookMeta = {
 通过 Electron + Vue 3 技术栈，我们成功构建了一个功能完善、用户体验优秀的书籍管理系统。该系统不仅满足了基本的 CRUD 操作需求，还在用户体验、数据安全、扩展性等方面进行了深度优化。
 
 ### 🎯 关键成功因素
+
 - **🏗️ 架构清晰**: 主进程负责文件操作，渲染进程负责 UI 交互
 - **🔒 数据安全**: 通过 IPC 机制确保跨进程通信的安全性
 - **🎨 用户体验**: 直观的界面设计和流畅的操作体验
 - **🔧 可维护性**: 模块化的代码结构和统一的状态管理
 
 ### 🚀 技术价值
+
 - **跨平台支持**: 基于 Electron 实现 Windows、macOS、Linux 全平台支持
 - **高性能**: 使用 Vue 3 的 Composition API 和 Pinia 状态管理
 - **可扩展**: 模块化的组件设计和清晰的代码结构
@@ -488,12 +500,14 @@ const bookMeta = {
 ---
 
 ### 📚 相关链接
+
 - **项目地址**: [GitHub - 51mazi](https://github.com/xiaoshengxianjun/51mazi)，给个 Star 哦~
 - **Electron 官方文档**: [Electron Documentation](https://www.electronjs.org/docs)
 - **Vue 3 官方文档**: [Vue 3 Documentation](https://vuejs.org/)
 - **Pinia 状态管理**: [Pinia Documentation](https://pinia.vuejs.org/)
 
 ### 🏷️ 标签
+
 `#Electron` `#Vue3` `#书籍管理` `#桌面应用` `#前端开发` `#状态管理` `#用户体验`
 
 ---

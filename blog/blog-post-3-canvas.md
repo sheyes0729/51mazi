@@ -3,6 +3,7 @@
 > 💡 本文详细介绍如何在小说写作软件中集成 Canvas 绘图功能，实现自定义地图设计工具，包括多种绘图工具、资源管理、缩放控制等核心功能。
 
 ## 📋 目录
+
 - [项目背景](#项目背景)
 - [Canvas 技术架构](#canvas-技术架构)
 - [核心功能实现](#核心功能实现)
@@ -19,9 +20,10 @@
 
 ![地图设计](https://raw.githubusercontent.com/xiaoshengxianjun/51mazi/main/static/maps.png)
 
-*强大的地图设计工具 - 支持自定义绘制和资源管理*
+_强大的地图设计工具 - 支持自定义绘制和资源管理_
 
 ### ✨ 功能特性
+
 - 🎨 **多种绘图工具**: 铅笔、橡皮擦、油漆桶、文字工具
 - 🖼️ **资源管理**: 预设图片资源拖拽添加
 - 🔍 **缩放控制**: 支持画布缩放和视图调整
@@ -31,6 +33,7 @@
 ## 🏗️ Canvas 技术架构
 
 ### 技术栈选择
+
 ```javascript
 // 核心依赖
 {
@@ -44,6 +47,7 @@ const ctx = canvas.getContext('2d')
 ```
 
 ### 核心架构设计
+
 ```javascript
 // src/renderer/src/views/MapDesign.vue
 <template>
@@ -59,10 +63,10 @@ const ctx = canvas.getContext('2d')
       <div class="tool-btn" :class="{ active: tool === 'bucket' }" @click="selectTool('bucket')">
         <img src="@renderer/assets/bucket.svg" alt="油漆桶" />
       </div>
-      
+
       <!-- 颜色选择器 -->
       <el-color-picker v-model="color" />
-      
+
       <!-- 缩放控制 -->
       <div class="zoom-controls">
         <el-button @click="zoomIn">+</el-button>
@@ -70,7 +74,7 @@ const ctx = canvas.getContext('2d')
         <el-button @click="zoomOut">-</el-button>
       </div>
     </div>
-    
+
     <div class="canvas-container" @wheel="handleWheel">
       <canvas
         ref="canvasRef"
@@ -110,13 +114,13 @@ const size = ref(5)
 onMounted(() => {
   const canvas = canvasRef.value
   const ctx = canvas.getContext('2d')
-  
+
   // 设置画布样式
   ctx.lineCap = 'round'
   ctx.lineJoin = 'round'
   ctx.strokeStyle = color.value
   ctx.lineWidth = size.value
-  
+
   // 初始化画布背景
   ctx.fillStyle = '#ffffff'
   ctx.fillRect(0, 0, canvasWidth.value, canvasHeight.value)
@@ -162,7 +166,7 @@ function startDraw(event) {
   const rect = canvasRef.value.getBoundingClientRect()
   const x = (event.clientX - rect.left) / scale.value
   const y = (event.clientY - rect.top) / scale.value
-  
+
   lastX.value = x
   lastY.value = y
 }
@@ -176,10 +180,10 @@ function startDraw(event) {
 // 缩放功能核心实现
 function handleWheel(event) {
   event.preventDefault()
-  
+
   const delta = event.deltaY > 0 ? 0.9 : 1.1
   const newScale = scale.value * delta
-  
+
   if (newScale >= minScale && newScale <= maxScale) {
     scale.value = newScale
     updateCanvasTransform()
@@ -189,7 +193,7 @@ function handleWheel(event) {
 function updateCanvasTransform() {
   const canvas = canvasRef.value
   const ctx = canvas.getContext('2d')
-  
+
   ctx.save()
   ctx.clearRect(0, 0, canvas.width, canvas.height)
   ctx.scale(scale.value, scale.value)
@@ -243,21 +247,21 @@ class PencilTool {
 
   move(x, y) {
     this.points.push({ x, y })
-    
+
     // 平滑曲线绘制
     if (this.points.length > 2) {
       const lastPoint = this.points[this.points.length - 1]
       const prevPoint = this.points[this.points.length - 2]
       const prevPrevPoint = this.points[this.points.length - 3]
-      
+
       const cp1x = prevPoint.x + (lastPoint.x - prevPrevPoint.x) / 6
       const cp1y = prevPoint.y + (lastPoint.y - prevPrevPoint.y) / 6
       const cp2x = lastPoint.x - (lastPoint.x - prevPoint.x) / 6
       const cp2y = lastPoint.y - (lastPoint.y - prevPoint.y) / 6
-      
+
       this.ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, lastPoint.x, lastPoint.y)
     }
-    
+
     this.ctx.stroke()
   }
 }
@@ -271,28 +275,28 @@ class PencilTool {
 // 油漆桶填充算法核心
 function floodFill(startX, startY, targetColor, fillColor, pixels, width, height) {
   const stack = [{ x: startX, y: startY }]
-  
+
   while (stack.length > 0) {
     const { x, y } = stack.pop()
     const index = (y * width + x) * 4
-    
+
     if (x < 0 || x >= width || y < 0 || y >= height) continue
-    
+
     const currentColor = {
       r: pixels[index],
       g: pixels[index + 1],
       b: pixels[index + 2],
       a: pixels[index + 3]
     }
-    
+
     if (!colorMatch(currentColor, targetColor)) continue
-    
+
     // 填充像素
     pixels[index] = fillColor.r
     pixels[index + 1] = fillColor.g
     pixels[index + 2] = fillColor.b
     pixels[index + 3] = fillColor.a
-    
+
     // 添加相邻像素到栈
     stack.push({ x: x + 1, y }, { x: x - 1, y }, { x, y: y + 1 }, { x, y: y - 1 })
   }
@@ -318,14 +322,14 @@ class TextTool {
     input.style.position = 'absolute'
     input.style.left = x + 'px'
     input.style.top = y + 'px'
-    
+
     input.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
         this.confirmText(input.value, x, y)
         input.remove()
       }
     })
-    
+
     document.body.appendChild(input)
     input.focus()
   }
@@ -381,19 +385,22 @@ class CanvasCache {
 function throttle(func, delay) {
   let timeoutId
   let lastExecTime = 0
-  
+
   return function (...args) {
     const currentTime = Date.now()
-    
+
     if (currentTime - lastExecTime > delay) {
       func.apply(this, args)
       lastExecTime = currentTime
     } else {
       clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        func.apply(this, args)
-        lastExecTime = Date.now()
-      }, delay - (currentTime - lastExecTime))
+      timeoutId = setTimeout(
+        () => {
+          func.apply(this, args)
+          lastExecTime = Date.now()
+        },
+        delay - (currentTime - lastExecTime)
+      )
     }
   }
 }
@@ -418,15 +425,15 @@ class MemoryManager {
     if (this.imageCache.has(url)) {
       return this.imageCache.get(url)
     }
-    
+
     const img = new Image()
     img.src = url
-    
+
     if (this.imageCache.size >= this.maxCacheSize) {
       const firstKey = this.imageCache.keys().next().value
       this.imageCache.delete(firstKey)
     }
-    
+
     this.imageCache.set(url, img)
     return img
   }
@@ -454,9 +461,9 @@ class MemoryManager {
         </div>
       </el-tooltip>
     </div>
-    
+
     <el-divider direction="vertical" />
-    
+
     <div class="tool-group">
       <el-color-picker v-model="color" />
       <el-slider v-model="size" :min="1" :max="40" style="width: 150px" />
@@ -472,11 +479,11 @@ class MemoryManager {
 ```javascript
 // 快捷键配置
 const keyboardShortcuts = {
-  'KeyP': () => selectTool('pencil'),
-  'KeyE': () => selectTool('eraser'),
+  KeyP: () => selectTool('pencil'),
+  KeyE: () => selectTool('eraser'),
   'Control+z': () => undo(),
-  'Equal': () => zoomIn(),
-  'Minus': () => zoomOut()
+  Equal: () => zoomIn(),
+  Minus: () => zoomOut()
 }
 
 // 注册快捷键
@@ -524,6 +531,7 @@ onMounted(() => {
 ## 📊 功能特性总结
 
 ### ✅ 已实现功能
+
 - ✅ **基础绘图**: 铅笔、橡皮擦、油漆桶工具
 - ✅ **文字工具**: 支持添加文字标注
 - ✅ **资源管理**: 预设图片资源拖拽
@@ -534,6 +542,7 @@ onMounted(() => {
 - ✅ **自动保存**: 实时保存绘图内容
 
 ### 🚀 技术亮点
+
 1. **高性能**: Canvas 硬件加速渲染
 2. **可扩展**: 模块化的工具系统
 3. **用户友好**: 直观的工具栏和操作反馈
@@ -544,12 +553,14 @@ onMounted(() => {
 Canvas 绘图功能在 51mazi 项目中的成功应用，展示了如何利用现代 Web 技术构建专业的地图设计工具。通过合理的架构设计、性能优化和用户体验优化，我们实现了一个功能完整、性能优秀的绘图系统。
 
 ### 🎯 技术价值
+
 - **架构设计**: 模块化的工具系统
 - **性能优化**: 缓存机制、事件节流等优化策略
 - **用户体验**: 直观的操作界面和快捷键支持
 - **可维护性**: 清晰的代码结构和错误处理
 
 ### 🔮 未来规划
+
 - **更多工具**: 支持更多绘图工具和效果
 - **图层系统**: 支持多层绘图和图层管理
 - **导入导出**: 支持多种图片格式导入导出
@@ -558,13 +569,15 @@ Canvas 绘图功能在 51mazi 项目中的成功应用，展示了如何利用�
 ---
 
 ### 📚 相关链接
+
 - **项目地址**: [GitHub - 51mazi](https://github.com/xiaoshengxianjun/51mazi)，给个 Star 哦~
 - **Canvas API**: [MDN Canvas](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 - **技术栈**: Canvas + Vue 3 + Element Plus
 
 ### 🏷️ 标签
+
 `#Canvas` `#绘图工具` `#地图设计` `#Vue3` `#前端开发` `#性能优化` `#用户体验`
 
 ---
 
-> 💡 **如果这篇文章对你有帮助，请给个 ⭐️ 支持一下！** 
+> 💡 **如果这篇文章对你有帮助，请给个 ⭐️ 支持一下！**
