@@ -37,6 +37,8 @@ ipcMain.handle('store:delete', async (_, key) => {
 // 维护已打开书籍编辑窗口的映射
 const bookEditorWindows = new Map()
 
+let mainWindowId = null
+
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -56,6 +58,8 @@ function createWindow() {
       allowRunningInsecureContent: true
     }
   })
+
+  mainWindowId = mainWindow.id
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
@@ -116,7 +120,11 @@ ipcMain.handle('operation-window', (event, action) => {
   if (!win) return
   switch (action) {
     case 'close':
-      win.close()
+      if (win.id === mainWindowId) {
+        app.quit()
+      } else {
+        win.close()
+      }
       break
     case 'minimize':
     case 'minus':

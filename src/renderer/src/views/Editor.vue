@@ -1,23 +1,26 @@
 <template>
   <div class="editor-container">
-    <el-splitter>
-      <el-splitter-panel :size="240" :min="200" :max="400">
-        <!-- 左侧面板：笔记章节 -->
-        <NoteChapter ref="noteChapterRef" :book-name="bookName" />
-      </el-splitter-panel>
-      <el-splitter-panel>
-        <!-- 中间编辑区 -->
-        <EditorPanel
-          :book-name="bookName"
-          @refresh-notes="refreshNotes"
-          @refresh-chapters="refreshChapters"
-        />
-      </el-splitter-panel>
-      <el-splitter-panel :size="150" :resizable="false">
-        <!-- 右侧工具栏 -->
-        <EditorToolbar />
-      </el-splitter-panel>
-    </el-splitter>
+    <WindowHeader />
+    <div class="editor-body">
+      <el-splitter>
+        <el-splitter-panel :size="240" :min="200" :max="400">
+          <!-- 左侧面板：笔记章节 -->
+          <NoteChapter ref="noteChapterRef" :book-name="bookName" />
+        </el-splitter-panel>
+        <el-splitter-panel>
+          <!-- 中间编辑区 -->
+          <EditorPanel
+            :book-name="bookName"
+            @refresh-notes="refreshNotes"
+            @refresh-chapters="refreshChapters"
+          />
+        </el-splitter-panel>
+        <el-splitter-panel :size="150" :resizable="false">
+          <!-- 右侧工具栏 -->
+          <EditorToolbar />
+        </el-splitter-panel>
+      </el-splitter>
+    </div>
   </div>
 </template>
 
@@ -27,6 +30,7 @@ import { useRoute } from 'vue-router'
 import NoteChapter from '@renderer/components/NoteChapter.vue'
 import EditorPanel from '@renderer/components/EditorPanel.vue'
 import EditorToolbar from '@renderer/components/EditorToolbar.vue'
+import WindowHeader from '@renderer/components/WindowHeader.vue'
 
 const route = useRoute()
 
@@ -63,6 +67,8 @@ function refreshChapters() {
 <style lang="scss" scoped>
 .editor-container {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-color: var(--bg-primary);
   position: relative;
   overflow: hidden;
@@ -83,5 +89,12 @@ function refreshChapters() {
   min-height: calc(100vh - 80px);
   /* 确保高度 */
   box-sizing: border-box;
+}
+
+.editor-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 </style>
