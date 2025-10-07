@@ -11,6 +11,10 @@ if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld('electron', {
       ...electronAPI,
+      // 操作窗口
+      operationWindow: (action) => {
+        ipcRenderer.invoke('operation-window', action)
+      },
       // --------- 书籍相关 ---------
       // 选择书籍目录
       selectBooksDir: () => ipcRenderer.invoke('select-books-dir'),

@@ -47,6 +47,7 @@ function createWindow() {
     minHeight: 800,
     show: false,
     autoHideMenuBar: true,
+    frame: false,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
@@ -106,6 +107,31 @@ app.whenReady().then(() => {
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit()
+  }
+})
+
+// 操作窗口
+ipcMain.handle('operation-window', (event, action) => {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  if (!win) return
+  switch (action) {
+    case 'close':
+      win.close()
+      break
+    case 'minimize':
+    case 'minus':
+      win.minimize()
+      break
+    case 'maximize':
+    case 'fullscreen':
+      if (win.isMaximized()) {
+        win.unmaximize()
+      } else {
+        win.maximize()
+      }
+      break
+    default:
+      break
   }
 })
 
@@ -290,6 +316,7 @@ ipcMain.handle('open-book-editor-window', async (event, { id, name }) => {
     minWidth: 1000,
     minHeight: 800,
     show: false,
+    frame: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {

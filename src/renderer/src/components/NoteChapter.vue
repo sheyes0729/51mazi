@@ -152,7 +152,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineExpose, nextTick } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import {
   ArrowRight,
   DocumentAdd,
